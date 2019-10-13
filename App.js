@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Alert, Button, Modal, StyleSheet, Text, View} from 'react-native';
+import {ActionSheetIOS, Alert, Button, Modal, StyleSheet, Text, View} from 'react-native';
 
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
       bug: 0,
+      backButtonTitle: `<- Back`,
       modalVisible: false
     };
   }
@@ -23,6 +24,22 @@ export default class App extends Component {
           this.setState({modalVisible: false});
         }, 1000);
         break;
+      case 2:
+        this.setState({modalVisible: true});
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ['Cancel', 'Remove'],
+            destructiveButtonIndex: 1,
+            cancelButtonIndex: 0,
+          },
+          (buttonIndex) => {
+            this.setState({backButtonTitle: `<- Back (haha, you can't! 😂😂😂)`});
+            console.log('Clicked action sheet button ' + buttonIndex);
+          }
+        );
+        break;
+      case 3:
+        break;
     }
   }
 
@@ -31,12 +48,12 @@ export default class App extends Component {
       <View style={styles.container}>
         {this.state.bug == 0 ?
           <View>
-            <Button title="Bug #1 - alert disappears by itself" style={styles.bugButton} onPress={() => this.activateBug(1)}/>
-            <Button title="Bug #2" style={styles.bugButton} onPress={() => this.activateBug(2)}/>
+            <Button title="Bug #1: Alert disappears by itself" style={styles.bugButton} onPress={() => this.activateBug(1)}/>
+            <Button title="Bug #2: Invisible blocking view" style={styles.bugButton} onPress={() => this.activateBug(2)}/>
             <Button title="Bug #3" style={styles.bugButton} onPress={() => this.activateBug(3)}/>
           </View>
           :
-          <Button title="<- Back" onPress={() => this.activateBug(0)}/>
+          <Button title={this.state.backButtonTitle} onPress={() => this.activateBug(0)}/>
         }
 
         <Modal
@@ -48,7 +65,7 @@ export default class App extends Component {
           }}>
           <View style={{marginTop: 22}}>
             <View>
-              <Text style={styles.modalText}>Hello World!</Text>
+              <Text style={styles.modalText}>Hi, I'm a modal!</Text>
               <Button title="Hide modal" style={styles.bugButton} onPress={() => this.setState({modalVisible: !this.state.modalVisible})}/>
             </View>
           </View>
